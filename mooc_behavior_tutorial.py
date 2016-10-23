@@ -23,7 +23,10 @@ sorted_file = 'ORDERED_DelftX_AE1110x_2T2015-events.log'
 #Step 2: Sort by time, in case it is not already sorted.
 def generate_ordered_event_copy(event_log_file_name):
     """
-    Takes in an event log file, with one action per row, orders the actions by time.
+    Takes in an event log file, with one action per row, orders the actions by time, and then writes a new file.
+
+    ../data/BerkeleyX_Stat_2.1x_1T2014-events.log
+
     """
     output_name = "ORDERED_" + event_log_file_name.split('/')[-1]
 
@@ -37,17 +40,20 @@ def generate_ordered_event_copy(event_log_file_name):
                 continue
             time_element = data['time']
             if '.' in time_element:
-                date_object = datetime.datetime.strptime(time_element[:-6], '%Y-%m-%dT%H:%M:%S.%f')
+                date_object = datetime.strptime(time_element[:-6], '%Y-%m-%dT%H:%M:%S.%f')
             else:
-                date_object = datetime.datetime.strptime(time_element[:-6], '%Y-%m-%dT%H:%M:%S')
+                date_object = datetime.strptime(time_element[:-6], '%Y-%m-%dT%H:%M:%S')
             all_data_paired_with_time.append((line, date_object))
     print('sorting by time ...')
     s = sorted(all_data_paired_with_time, key=lambda p: p[1])
     to_output = [pair[0] for pair in s]
-    return to_output
+#    return to_output
 
-#ordered_log = generate_ordered_event_copy(log_file_name)
-
+    print("dumping json to",output_name)
+    with open(output_name, mode='w') as f:
+        for line in to_output:
+            f.write(line)
+    return output_name
 
 #Step 3: Preprocess to only grab rows we are interested in. For the purpose of this example, we only want actions related to which page the student is at. Thus, we exclude events such as quiz taking, video viewing, etc.
 def generate_courseware_and_seq_events(log_file, earliest_time = datetime.datetime.min, latest_time = datetime.datetime.max, require_problem_check = False, bug_test = False):
