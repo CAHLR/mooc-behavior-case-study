@@ -69,7 +69,7 @@ my_keras_model.keras_model = my_keras_model.create_basic_lstm_model(2, 0.01, 128
 my_keras_model.set_model_name('Baseline_Input_Output')
 
 hill_climbing_proportion = 0.1
-hill_climbing_index = int(len(my_keras_model.X) * (1 - hill_climbing_proportion))
+hill_climbing_index = int(len(X) * (1 - hill_climbing_proportion))
 train_x = X[:hill_climbing_index]
 train_y = y[:hill_climbing_index]
 validation_data = (X[hill_climbing_index:], y[hill_climbing_index:])
